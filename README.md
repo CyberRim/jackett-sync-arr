@@ -1,0 +1,1 @@
+# jackett-sync-arr
