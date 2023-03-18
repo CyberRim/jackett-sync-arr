@@ -1,0 +1,55 @@
+{
+    "name": "jackett-sync-arr",
+    "version": "1.0.0",
+    "description": "jackett sync radarr indexer",
+    "main": "index.js",
+    "type": "commonjs",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "ts-node  src/index.ts",
+        "dev": "cross-env NODE_ENV=dev ts-node src/index.ts",
+        "clean": "rimraf ./dist",
+        "build": "npm run clean && tsc",
+        "prepare": "husky install",
+        "lint": "lint-staged --allow-empty",
+        "eslint": "eslint --fix .",
+        "pretty": "pretty --write ."
+    },
+    "author": {
+        "name": "cyberrim",
+        "email": "cyberrim@foxmail.com"
+    },
+    "license": "GPL",
+    "devDependencies": {
+        "@commitlint/cli": "^17.4.4",
+        "@commitlint/config-conventional": "^17.4.4",
+        "@typescript-eslint/eslint-plugin": "^5.55.0",
+        "@typescript-eslint/parser": "^5.55.0",
+        "cross-env": "^7.0.3",
+        "cz-conventional-changelog": "^3.3.0",
+        "eslint": "^8.36.0",
+        "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-config-airbnb-typescript": "^17.0.0",
+        "eslint-config-prettier": "^8.7.0",
+        "eslint-plugin-import": "^2.27.5",
+        "eslint-plugin-prettier": "^4.2.1",
+        "husky": "^8.0.3",
+        "lint-staged": "^13.2.0",
+        "prettier": "^2.8.4",
+        "ts-node": "^10.9.1",
+        "typescript": "^5.0.2"
+    },
+    "dependencies": {
+        "@types/config": "^3.3.0",
+        "@types/node": "^18.15.1",
+        "config": "^3.3.9",
+        "node-fetch-commonjs": "^3.2.4",
+        "winston": "^3.8.2",
+        "xml-js": "^1.6.11"
+    },
+    "config": {
+        "commitizen": {
+            "path": "./node_modules/cz-conventional-changelog"
+        }
+    }
+}

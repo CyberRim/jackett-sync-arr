@@ -1,0 +1,42 @@
+{
+    "jackett": {
+        "host": "http://127.0.0.1",
+        "port": "9117",
+        "key": "",
+        "path": "/api/v2.0"
+    },
+    "radarr": {
+        "host": "http://127.0.0.1",
+        "port": "7878",
+        "key": "",
+        "path": "/api/v3",
+        "setting": {
+            "default": {
+                "enableRss": true,
+                "enableAutomaticSearch": true,
+                "enableInteractiveSearch": true,
+                "apiPath": "/api",
+                "multiLanguages": [-2],
+                "additionalParameters": "",
+                "removeYear": false,
+                "minimumSeeders": 1,
+                "seedRatio": "",
+                "seedTime": "",
+                "requiredFlags": [],
+                "priority": 25,
+                "downloadClientId": 0,
+                "tags": []
+            },
+            "public": {
+                "downloadClientId": 0
+            },
+            "private": {
+                "requiredFlags": [1],
+                "downloadClientId": 0
+            }
+        }
+    },
+    "log": {
+        "level": "info"
+    }
+}
