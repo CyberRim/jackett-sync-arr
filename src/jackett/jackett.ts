@@ -19,6 +19,13 @@ export namespace JackettNS {
             super();
         }
 
+        protected checkConfig(): boolean {
+            if (!this.checkConfigApiInfo()) {
+                return false;
+            }
+            return true;
+        }
+
         // eslint-disable-next-line class-methods-use-this
         getConfigName(): string {
             return ConfigName.JACKETT;

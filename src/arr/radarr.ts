@@ -11,6 +11,13 @@ export namespace RadarrNS {
 
         indexerCache: Indexer.IndexerResource[] = [];
 
+        protected checkConfig(): boolean {
+            if (!this.checkConfigApiInfo()) {
+                return false;
+            }
+            return true;
+        }
+
         // eslint-disable-next-line class-methods-use-this
         protected getConfigName(): string {
             return ConfigName.RADARR;
