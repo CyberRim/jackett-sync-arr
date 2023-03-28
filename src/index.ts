@@ -1,4 +1,4 @@
-import { JackettNS } from './jackett';
+import { JackettNS } from './jackett/jackett';
 import { RadarrNS } from './arr/radarr';
 import { log } from './logger/log';
 

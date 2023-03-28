@@ -1,8 +1,9 @@
-import { Arr, ArrName, type Config as ConfigArr } from './Arr';
+import { Arr, type Config as ConfigArr } from './Arr';
 import { Method } from '../fetch';
-import { JackettNS } from '../jackett';
+import { JackettNS } from '../jackett/jackett';
 import { isValidKey } from '../util';
 import { log } from '../logger/log';
+import { ConfigName } from '../Base';
 
 export namespace RadarrNS {
     export class Radarr extends Arr {
@@ -10,8 +11,9 @@ export namespace RadarrNS {
 
         indexerCache: Indexer.IndexerResource[] = [];
 
-        setArrName(): void {
-            this.arrName = ArrName.RADARR;
+        // eslint-disable-next-line class-methods-use-this
+        protected getConfigName(): string {
+            return ConfigName.RADARR;
         }
 
         async getDownloadClient(): Promise<DownloadClient | null> {

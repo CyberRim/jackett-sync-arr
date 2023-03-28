@@ -1,6 +1,6 @@
-import configUtil from 'config';
 import { BodyInit } from 'node-fetch-commonjs';
 import path from 'path';
+import { Base } from '../Base';
 import { fetch, type Method } from '../fetch';
 import { log } from '../logger/log';
 
@@ -10,26 +10,9 @@ export interface Config {
     key: string;
     path: string;
 }
-export enum ArrName {
-    RADARR = 'radarr',
-    SONARR = 'sonarr',
-}
 
-export abstract class Arr {
-    arrName: ArrName | undefined;
-
-    config: Config;
-
-    constructor() {
-        this.setArrName();
-        if (this.arrName === undefined) {
-            // TODO:throw
-            throw new Error();
-        }
-        this.config = configUtil.get(this.arrName);
-    }
-
-    abstract setArrName(): void;
+export abstract class Arr extends Base {
+    config!: Config;
 
     async api(
         method: Method,

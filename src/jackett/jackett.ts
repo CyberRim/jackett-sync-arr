@@ -1,21 +1,28 @@
 import fetch from 'node-fetch-commonjs';
 import { xml2js } from 'xml-js';
-import configUtil from 'config';
+import { Base, ConfigName } from '../Base';
 
 export namespace JackettNS {
-    export class Jackett {
-        config: {
-            host: string;
-            port: string;
-            path: string;
-            key: string;
-        };
+    export type Config = {
+        host: string;
+        port: string;
+        path: string;
+        key: string;
+    };
+
+    export class Jackett extends Base {
+        private static jackettInstance: Jackett;
+
+        config!: Config;
 
         private constructor() {
-            this.config = configUtil.get('jackett');
+            super();
         }
 
-        private static jackettInstance: Jackett;
+        // eslint-disable-next-line class-methods-use-this
+        getConfigName(): string {
+            return ConfigName.JACKETT;
+        }
 
         static getInstance(): Jackett {
             if (Jackett.jackettInstance) {
