@@ -1,6 +1,7 @@
-import fetch from 'node-fetch-commonjs';
 import { xml2js } from 'xml-js';
+import { fetch, Method } from '../fetch';
 import { Base, ConfigName } from '../Base';
+import { log } from '../logger/log';
 
 export namespace JackettNS {
     export type Config = {
@@ -46,9 +47,12 @@ export namespace JackettNS {
             url.searchParams.append('apikey', this.config.key);
             url.searchParams.append('t', 'indexers');
             url.searchParams.append('configured', 'true');
-            const response = await fetch(url.href);
-            const text = await response.text();
-            return Jackett.postFetch(text);
+            const responseText = await fetch(url, Method.GET);
+            if (responseText === null) {
+                log.error(`获取Jackett indexers配置信息失败`);
+                return null;
+            }
+            return Jackett.postFetch(responseText);
             // console.log(JSON.stringify(indexersArray as Indexer[], null, 4));
         }
 

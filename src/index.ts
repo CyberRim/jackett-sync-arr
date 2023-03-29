@@ -8,6 +8,7 @@ import { log } from './logger/log';
     const indexers = await jackett.getConfiguredIndexers();
     const radarr = new RadarrNS.Radarr();
     if (indexers == null) {
+        log.info(`exit`);
         return;
     }
     indexers.forEach(async (indexer) => {
