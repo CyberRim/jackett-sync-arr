@@ -7,9 +7,15 @@ import { ConfigName } from '../Base';
 
 export namespace RadarrNS {
     export class Radarr extends Arr {
+        private static radarrInstance: Radarr;
+
         config!: Config;
 
         indexerCache: Indexer.IndexerResource[] = [];
+
+        private constructor() {
+            super();
+        }
 
         protected checkConfig(): boolean {
             if (!this.checkConfigApiInfo()) {
@@ -21,6 +27,15 @@ export namespace RadarrNS {
         // eslint-disable-next-line class-methods-use-this
         protected getConfigName(): string {
             return ConfigName.RADARR;
+        }
+
+        static getInstance(): Radarr {
+            if (Radarr.radarrInstance) {
+                return this.radarrInstance;
+            }
+            const instance = new Radarr();
+            Radarr.radarrInstance = instance;
+            return Radarr.radarrInstance;
         }
 
         async getDownloadClient(): Promise<DownloadClient | null> {

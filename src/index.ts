@@ -6,7 +6,7 @@ import { log } from './logger/log';
     log.debug(`$NODE_ENV=${process.env.NODE_ENV as string}`);
     const jackett = JackettNS.Jackett.getInstance();
     const indexers = await jackett.getConfiguredIndexers();
-    const radarr = new RadarrNS.Radarr();
+    const radarr = RadarrNS.Radarr.getInstance();
     if (indexers == null) {
         log.info(`exit`);
         return;
