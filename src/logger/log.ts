@@ -10,7 +10,7 @@ class Log {
         winston.format.timestamp(),
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         winston.format.printf(({ level, message, label, timestamp }) => {
-            return `${timestamp}  ${level}  ${message} `;
+            return `[${timestamp}]:[${level}]:${message} `;
         }),
     );
 
