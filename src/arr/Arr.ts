@@ -105,9 +105,11 @@ export abstract class Arr extends Base {
                 }
                 return false;
             });
-            if (isDup) {
-                log.warn(`${body.name} fail.${JSON.stringify(response[0])}`);
+            if (!isDup) {
+                // TODO:
+                return;
             }
+            log.info(`${body.name} already exists.`);
             return;
         }
 
