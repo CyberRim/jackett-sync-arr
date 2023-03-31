@@ -1,8 +1,5 @@
-import { Arr, DownloadClient, Config, Fields, IndexerResource } from './Arr';
-import { Method } from '../fetch';
+import { Arr, Fields } from './Arr';
 import { Indexer, Jackett } from '../jackett/jackett';
-import { isValidKey } from '../util';
-import { log } from '../logger/log';
 import { ConfigName } from '../Base';
 
 export default {};
@@ -10,19 +7,8 @@ export default {};
 export class Radarr extends Arr {
     private static radarrInstance: Radarr;
 
-    config!: Config;
-
-    indexerCache: IndexerResource[] = [];
-
     private constructor() {
         super();
-    }
-
-    protected checkConfig(): boolean {
-        if (!this.checkConfigApiInfo()) {
-            return false;
-        }
-        return true;
     }
 
     // eslint-disable-next-line class-methods-use-this
@@ -37,142 +23,6 @@ export class Radarr extends Arr {
         const instance = new Radarr();
         Radarr.radarrInstance = instance;
         return Radarr.radarrInstance;
-    }
-
-    async getDownloadClient(): Promise<DownloadClient | null> {
-        const apiPath = '/downloadclient';
-        const clients = await this.api(Method.GET, apiPath);
-        return clients as DownloadClient | null;
-    }
-
-    async getIndexer(): Promise<IndexerResource[] | null> {
-        const apiPath = '/indexer';
-        const indexer = await this.api(Method.GET, apiPath);
-        return indexer as IndexerResource[] | null;
-    }
-
-    async postIndexer(indexer: Indexer): Promise<void> {
-        const apiPath = '/indexer';
-        const body: IndexerResource = this.genIndexerResource(indexer);
-        const response = await this.api(
-            Method.POST,
-            apiPath,
-            '',
-            JSON.stringify(body),
-        );
-        if (response === null) {
-            return;
-        }
-        // {
-        //     propertyName: 'Name',
-        //     errorMessage: 'Should be unique',
-        //     attemptedValue: 'XXX',
-        //     severity: 'error',
-        //     errorCode: 'PredicateValidator',
-        //     formattedMessageArguments: [],
-        //     formattedMessagePlaceholderValues: { propertyName: 'Name', propertyValue: 'XXX' }
-        // }
-        if (
-            response instanceof Array &&
-            response[0].severity === 'error' &&
-            response[0].errorCode === 'PredicateValidator' &&
-            response[0].propertyName === 'Name'
-        ) {
-            this.indexerCache =
-                this.indexerCache.length === 0
-                    ? (await this.getIndexer()) ?? []
-                    : this.indexerCache;
-            const isDup = this.indexerCache.some((indexer2): boolean => {
-                if (indexer2.name === body.name) {
-                    let baseUrlValue = '';
-                    const bodyFieldsNames = Object.keys(body.fields);
-                    for (let i = 0; i < bodyFieldsNames.length; i += 1) {
-                        const name = bodyFieldsNames[i];
-                        const value = body.fields.values;
-                        if (name === 'baseUrl') {
-                            if (typeof value !== 'string') {
-                                break;
-                            }
-                            baseUrlValue = value;
-                            break;
-                        }
-                    }
-
-                    return body.fields.some((field) => {
-                        return (
-                            field.name === 'baseUrl' &&
-                            field.value === baseUrlValue
-                        );
-                    });
-                }
-                return false;
-            });
-            if (isDup) {
-                log.warn(`${body.name}>>>>duplicate`);
-            }
-            return;
-        }
-
-        // {
-        //     isWarning: false,
-        //     propertyName: '',
-        //     errorMessage: 'Unable to connect to indexer, check the log for more details',
-        //     severity: 'error'
-        //   }
-
-        if (response instanceof Array && response[0].severity === 'error') {
-            log.warn(`${body.name}>>>>${response[0].errorMessage as string}`);
-            return;
-        }
-
-        if (response.name === body.name) {
-            log.info(`${response.name} success`);
-            return;
-        }
-
-        log.info(response);
-    }
-
-    genIndexerResource(indexer: Indexer): IndexerResource {
-        return {
-            enableRss: this.getSetting(indexer, 'enableRss'),
-            enableAutomaticSearch: this.getSetting(
-                indexer,
-                'enableAutomaticSearch',
-            ),
-            enableInteractiveSearch: this.getSetting(
-                indexer,
-                'enableInteractiveSearch',
-            ),
-            supportsRss: true,
-            supportsSearch: true,
-            protocol: 'torrent',
-            priority: this.getSetting(indexer, 'priority'),
-            downloadClientId: this.getSetting(indexer, 'downloadClientId'),
-            name: indexer.title,
-            fields: this.genIndexerFields(indexer),
-            implementationName: 'Torznab',
-            implementation: 'Torznab',
-            configContract: 'TorznabSettings',
-            tags: this.getSetting(indexer, 'tags'),
-            id: undefined,
-        };
-    }
-
-    getSetting<T>(indexer: Indexer, settingName: string): T {
-        const indexerType = indexer.type;
-        if (isValidKey(indexerType, this.config.setting)) {
-            if (isValidKey(settingName, this.config.setting[indexerType])) {
-                return this.config.setting[indexerType][settingName];
-            }
-        }
-        if (isValidKey('default', this.config.setting)) {
-            if (isValidKey(settingName, this.config.setting.default)) {
-                return this.config.setting.default[settingName];
-            }
-        }
-        // TODO:
-        throw new Error(settingName);
     }
 
     genIndexerFields(indexer: Indexer): Fields {
