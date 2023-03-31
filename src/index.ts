@@ -1,12 +1,12 @@
-import { JackettNS } from './jackett/jackett';
-import { RadarrNS } from './arr/radarr';
+import { Jackett } from './jackett/jackett';
+import { Radarr } from './arr/radarr';
 import { log } from './logger/log';
 
 (async () => {
     log.debug(`$NODE_ENV=${process.env.NODE_ENV as string}`);
-    const jackett = JackettNS.Jackett.getInstance();
+    const jackett = Jackett.getInstance();
     const indexers = await jackett.getConfiguredIndexers();
-    const radarr = RadarrNS.Radarr.getInstance();
+    const radarr = Radarr.getInstance();
     if (indexers == null) {
         log.info(`exit`);
         return;

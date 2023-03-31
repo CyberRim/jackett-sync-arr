@@ -4,13 +4,6 @@ import { Base } from '../Base';
 import { fetch, type Method } from '../fetch';
 import { log } from '../logger/log';
 
-export interface Config {
-    host: string;
-    port: string;
-    key: string;
-    path: string;
-}
-
 export abstract class Arr extends Base {
     config!: Config;
 
@@ -45,3 +38,118 @@ export abstract class Arr extends Base {
         return url;
     }
 }
+
+export type Config = {
+    host: string;
+    port: string;
+    key: string;
+    path: string;
+    setting: {
+        default: Setting;
+        public?: Partial<Setting>;
+        private?: Partial<Setting>;
+    };
+};
+export type Setting = {
+    enableRss: boolean;
+    enableAutomaticSearch: boolean;
+    enableInteractiveSearch: boolean;
+    apiPath: '/api';
+    multiLanguages: number[];
+    additionalParameters: string;
+    removeYear: boolean;
+    minimumSeeders: number;
+    seedRatio: string;
+    seedTime: string;
+    requiredFlags: number[];
+    priority: number;
+    downloadClientId: number;
+    tags: number[];
+};
+
+export type DownloadClient = {
+    id: number;
+    name: string;
+    implementationName: string;
+    implementation: string;
+    configContract: string;
+    infoLink: string;
+    message: {
+        message: string;
+        type: string;
+    };
+    tags: number[];
+    presets: string[];
+    enable: boolean;
+    protocol: string;
+    priority: number;
+    removeCompletedDownloads: boolean;
+    removeFailedDownloads: boolean;
+    fields: Array<{
+        order: number;
+        name: string;
+        label: string;
+        unit: string;
+        helpText: string;
+        helpLink: string;
+        value: string;
+        type: string;
+        advanced: boolean;
+        selectOptions: Array<{
+            value: number;
+            name: string;
+            order: number;
+            hint: string;
+            dividerAfter: boolean;
+        }>;
+        selectOptionsProviderAction: string;
+        section: string;
+        hidden: string;
+        placeholder: string;
+    }>;
+};
+export type IndexerResource = {
+    id?: number;
+    name: string;
+    fields: Fields;
+    implementationName: string;
+    implementation: string;
+    configContract: string;
+    infoLink?: string;
+    message?: {
+        message: string;
+        type: string;
+    };
+    tags?: number[];
+    presets?: string[];
+    enableRss: boolean;
+    enableAutomaticSearch: boolean;
+    enableInteractiveSearch: boolean;
+    supportsRss: boolean;
+    supportsSearch: boolean;
+    protocol: string;
+    priority: number;
+    downloadClientId: number;
+};
+export type Fields = Array<{
+    order?: number;
+    name: string;
+    label?: string;
+    unit?: string;
+    helpText?: string;
+    helpLink?: string;
+    value: string | number | boolean | number[];
+    type?: string;
+    advanced?: boolean;
+    selectOptions?: Array<{
+        value: number;
+        name: string;
+        order: number;
+        hint: string;
+        dividerAfter: boolean;
+    }>;
+    selectOptionsProviderAction?: string;
+    section?: string;
+    hidden?: string;
+    placeholder?: string;
+}>;
