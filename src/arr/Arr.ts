@@ -106,7 +106,7 @@ export abstract class Arr extends Base {
                 return false;
             });
             if (isDup) {
-                log.warn(`${body.name} fail.${response[0]}`);
+                log.warn(`${body.name} fail.${JSON.stringify(response[0])}`);
             }
             return;
         }
