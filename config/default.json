@@ -16,23 +16,23 @@
                 "enableAutomaticSearch": true,
                 "enableInteractiveSearch": true,
                 "apiPath": "/api",
-                "multiLanguages": [-2],
+                "animeStandardFormatSearch": false,
                 "additionalParameters": "",
-                "removeYear": false,
                 "minimumSeeders": 1,
                 "seedRatio": "",
                 "seedTime": "",
-                "requiredFlags": [],
+                "seasonPackSeedTime": "",
                 "priority": 25,
                 "downloadClientId": 0,
                 "tags": []
             },
             "public": {
-                "downloadClientId": 0
+                "downloadClientId": 1
             },
             "private": {
-                "requiredFlags": [1],
-                "downloadClientId": 0
+                "enableRss": false,
+                "enableAutomaticSearch": false,
+                "downloadClientId": 2
             }
         }
     },

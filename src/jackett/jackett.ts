@@ -133,7 +133,7 @@ type Search = {
     available: string;
     supportedParams: string;
 };
-type Category = {
+export type Category = {
     id: string;
     name: string;
     subcat?: Subcat;

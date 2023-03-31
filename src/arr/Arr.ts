@@ -3,7 +3,7 @@ import path from 'path';
 import { Base } from '../Base';
 import { fetch, Method } from '../fetch';
 import { log } from '../logger/log';
-import { Indexer } from '../jackett/jackett';
+import { Category, Indexer } from '../jackett/jackett';
 import { isValidKey } from '../util';
 
 export abstract class Arr extends Base {
@@ -184,6 +184,49 @@ export abstract class Arr extends Base {
             url.pathname = path.join(url.pathname, `${pathValue}`);
         }
         return url;
+    }
+
+    static genCategoriesValue(
+        indexer: Indexer,
+        pattens: Array<RegExp | string>,
+    ): number[] {
+        const categories = indexer.caps.categories.category;
+        const selectCategories = (
+            categories instanceof Array ? categories : [categories]
+        ).filter((category) => {
+            // const reg = /movie|电影|電影|documentaries|documentary|纪录|紀錄/i;
+
+            // if (reg.test(v.name) || v.id === '2000') {
+            //     return true;
+            // }
+            // return false;
+            for (let index = 0; index < pattens.length; index += 1) {
+                const patten = pattens[index];
+                if (this.isFitCategory(category, patten)) {
+                    return true;
+                }
+            }
+            return false;
+        });
+        if (categories.length === 1 && /other/i.test(categories[0].name)) {
+            selectCategories.push(categories[0]);
+        }
+        return selectCategories.map((v) => {
+            return parseInt(v.id, 10);
+        });
+    }
+
+    private static isFitCategory(
+        category: Category,
+        t: RegExp | string,
+    ): boolean {
+        if (typeof t === 'number' && category.id === t) {
+            return true;
+        }
+        if (t instanceof RegExp && t.test(category.name)) {
+            return true;
+        }
+        return false;
     }
 }
 
