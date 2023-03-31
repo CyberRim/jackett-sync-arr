@@ -18,9 +18,9 @@ export abstract class Base {
     constructor() {
         this.config = configUtil.get(this.getConfigName());
         if (this.checkConfig()) {
-            log.info('配置文件载入成功');
+            log.info(`配置文件${this.getConfigName()}载入成功`);
         } else {
-            log.error('配置文件载入失败');
+            log.error(`配置文件${this.getConfigName()}载入失败`);
         }
     }
 
@@ -31,7 +31,9 @@ export abstract class Base {
             this.config.path === '' ||
             this.config.key === ''
         ) {
-            log.error(`配置文件中字段'host'，'port'，'path'，'key'存在空值`);
+            log.error(
+                `配置文件${this.getConfigName()}中字段'host'，'port'，'path'，'key'存在空值`,
+            );
             log.debug(`checkConfigApiInfo false`);
             return false;
         }

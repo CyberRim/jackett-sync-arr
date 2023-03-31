@@ -107,7 +107,7 @@ export abstract class Arr extends Base {
                 return false;
             });
             if (isDup) {
-                log.warn(`${body.name}>>>>duplicate`);
+                log.warn(`${body.name} fail.${response[0]}`);
             }
             return;
         }
@@ -120,12 +120,12 @@ export abstract class Arr extends Base {
         //   }
 
         if (response instanceof Array && response[0].severity === 'error') {
-            log.warn(`${body.name}>>>>${response[0].errorMessage as string}`);
+            log.warn(`${body.name}${response[0].errorMessage as string}`);
             return;
         }
 
         if (response.name === body.name) {
-            log.info(`${response.name} success`);
+            log.info(`${response.name} success.`);
             return;
         }
 
