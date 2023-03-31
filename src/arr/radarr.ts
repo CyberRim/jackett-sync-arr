@@ -1,4 +1,4 @@
-import { Arr, type Config as ConfigArr } from './Arr';
+import { Arr, type Config as ConfigArr } from './arr';
 import { Method } from '../fetch';
 import { JackettNS } from '../jackett/jackett';
 import { isValidKey } from '../util';
