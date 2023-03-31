@@ -81,13 +81,12 @@ export abstract class Arr extends Base {
                 this.indexerCache.length === 0
                     ? (await this.getIndexer()) ?? []
                     : this.indexerCache;
+
             const isDup = this.indexerCache.some((indexer2): boolean => {
                 if (indexer2.name === body.name) {
                     let baseUrlValue = '';
-                    const bodyFieldsNames = Object.keys(body.fields);
-                    for (let i = 0; i < bodyFieldsNames.length; i += 1) {
-                        const name = bodyFieldsNames[i];
-                        const value = body.fields.values;
+                    for (let i = 0; i < body.fields.length; i += 1) {
+                        const { name, value } = body.fields[i];
                         if (name === 'baseUrl') {
                             if (typeof value !== 'string') {
                                 break;
