@@ -1,22 +1,26 @@
-import { Arr, DownloadClient, Config, Fields, IndexerResource } from './Arr';
+import { ConfigName } from '../Base';
 import { Method } from '../fetch';
 import { Indexer, Jackett } from '../jackett/jackett';
-import { isValidKey } from '../util';
 import { log } from '../logger/log';
-import { ConfigName } from '../Base';
+import { isValidKey } from '../util';
+import { Arr, Config, DownloadClient, Fields, IndexerResource } from './Arr';
 
 export default {};
+export class Sonarr extends Arr {
+    private constructor() {
+        super();
+    }
 
-export class Radarr extends Arr {
-    private static radarrInstance: Radarr;
+    // eslint-disable-next-line class-methods-use-this
+    protected getConfigName(): string {
+        return ConfigName.SONARR;
+    }
+
+    private static SonarrInstance: Sonarr;
 
     config!: Config;
 
     indexerCache: IndexerResource[] = [];
-
-    private constructor() {
-        super();
-    }
 
     protected checkConfig(): boolean {
         if (!this.checkConfigApiInfo()) {
@@ -25,18 +29,13 @@ export class Radarr extends Arr {
         return true;
     }
 
-    // eslint-disable-next-line class-methods-use-this
-    protected getConfigName(): string {
-        return ConfigName.RADARR;
-    }
-
-    static getInstance(): Radarr {
-        if (Radarr.radarrInstance) {
-            return this.radarrInstance;
+    static getInstance(): Sonarr {
+        if (Sonarr.SonarrInstance) {
+            return this.SonarrInstance;
         }
-        const instance = new Radarr();
-        Radarr.radarrInstance = instance;
-        return Radarr.radarrInstance;
+        const instance = new Sonarr();
+        Sonarr.SonarrInstance = instance;
+        return Sonarr.SonarrInstance;
     }
 
     async getDownloadClient(): Promise<DownloadClient | null> {
@@ -178,7 +177,7 @@ export class Radarr extends Arr {
     genIndexerFields(indexer: Indexer): Fields {
         const baseUrlValue = Jackett.getInstance().genTorznabFeed(indexer).href;
         const apiKeyValue = Jackett.getInstance().config.key;
-        const categoriesValue = Radarr.genCategoriesValue(indexer);
+        const categoriesValue = Sonarr.genCategoriesValue(indexer);
         return [
             { name: 'baseUrl', value: baseUrlValue },
             { name: 'apiPath', value: '/api' },
@@ -217,8 +216,8 @@ export class Radarr extends Arr {
         const selectCategories = (
             categories instanceof Array ? categories : [categories]
         ).filter((v) => {
-            const reg = /movie|电影|電影|documentaries|documentary|纪录|紀錄/i;
-            if (reg.test(v.name) || v.id === '2000') {
+            const reg = /tv|连续剧|影劇|documentaries|documentary|纪录|紀錄/i;
+            if (reg.test(v.name) || v.id === '5000') {
                 return true;
             }
             return false;

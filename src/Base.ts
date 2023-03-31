@@ -5,6 +5,7 @@ export default {};
 export enum ConfigName {
     JACKETT = 'jackett',
     RADARR = 'radarr',
+    SONARR = 'sonarr',
 }
 export abstract class Base {
     config: {
