@@ -13,7 +13,8 @@
         "prepare": "husky install",
         "lint": "lint-staged --allow-empty",
         "eslint": "eslint --fix .",
-        "pretty": "pretty --write ."
+        "pretty": "pretty --write .",
+        "configInti": "ts-node src/script/configInti.ts"
     },
     "author": {
         "name": "cyberrim",
