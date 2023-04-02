@@ -25,11 +25,15 @@ export class Radarr extends Arr {
         return Radarr.radarrInstance;
     }
 
-    genIndexerFields(indexer: Indexer): Fields {
-        const baseUrlValue = Jackett.getInstance().genTorznabFeed(indexer).href;
-        const apiKeyValue = Jackett.getInstance().config.key;
+    genIndexerFields(indexer: Indexer): Fields | null {
+        const baseUrlValue =
+            Jackett.getInstance().genTorznabFeed(indexer)?.href;
+        const apiKeyValue = Jackett.getInstance().config?.key;
         const categoriesValue = Radarr.genRadarrCategoriesValue(indexer);
-        return [
+        if (baseUrlValue === undefined || apiKeyValue === undefined) {
+            return null;
+        }
+        const fields = [
             { name: 'baseUrl', value: baseUrlValue },
             { name: 'apiPath', value: '/api' },
             { name: 'apiKey', value: apiKeyValue },
@@ -60,6 +64,13 @@ export class Radarr extends Arr {
                 value: this.getSetting<number[]>(indexer, 'requiredFlags'),
             },
         ];
+        for (let index = 0; index < fields.length; index += 1) {
+            const { value } = fields[index];
+            if (value === null || value === undefined) {
+                return null;
+            }
+        }
+        return fields as Fields;
     }
 
     static genRadarrCategoriesValue(indexer: Indexer): number[] {

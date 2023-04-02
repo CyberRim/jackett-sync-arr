@@ -7,24 +7,36 @@ export enum ConfigName {
     RADARR = 'radarr',
     SONARR = 'sonarr',
 }
+export type Config = {
+    host: string;
+    port: string;
+    path: string;
+    key: string;
+};
+
 export abstract class Base {
-    config: {
-        host: string;
-        port: string;
-        path: string;
-        key: string;
-    };
+    config: Config | undefined;
 
     constructor() {
-        this.config = configUtil.get(this.getConfigName());
+        try {
+            this.config = configUtil.get(this.getConfigName());
+        } catch (error) {
+            log.warn(error);
+        }
+
         if (this.checkConfig()) {
             log.info(`配置文件${this.getConfigName()}载入成功`);
         } else {
-            log.error(`配置文件${this.getConfigName()}载入失败`);
+            log.warn(
+                `配置文件${this.getConfigName()}载入失败，没有找到相关配置`,
+            );
         }
     }
 
     protected checkConfigApiInfo(): boolean {
+        if (this.config === undefined) {
+            return false;
+        }
         if (
             this.config.host === '' ||
             this.config.port === '' ||

@@ -13,7 +13,7 @@ export type Config = {
 export class Jackett extends Base {
     private static jackettInstance: Jackett;
 
-    config!: Config;
+    config: Config | undefined;
 
     private constructor() {
         super();
@@ -41,8 +41,14 @@ export class Jackett extends Base {
     }
 
     async getConfiguredIndexers() {
+        if (this.config === undefined) {
+            return null;
+        }
         // console.log(url.href);
         const url = this.genTorznabFeed('all');
+        if (url === null) {
+            return null;
+        }
         url.searchParams.append('apikey', this.config.key);
         url.searchParams.append('t', 'indexers');
         url.searchParams.append('configured', 'true');
@@ -100,6 +106,9 @@ export class Jackett extends Base {
     }
 
     genTorznabFeed(indexer: Indexer | string) {
+        if (this.config === undefined) {
+            return null;
+        }
         const indexerId = typeof indexer === 'string' ? indexer : indexer.id;
         const url = new URL(this.config.host);
         url.port = this.config.port;

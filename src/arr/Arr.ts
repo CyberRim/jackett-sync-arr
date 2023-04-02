@@ -1,13 +1,13 @@
 import { BodyInit } from 'node-fetch-commonjs';
 import path from 'path';
-import { Base } from '../Base';
+import { Base, Config as BaseConfig } from '../Base';
 import { fetch, Method } from '../fetch';
 import { log } from '../logger/log';
 import { Category, Indexer } from '../jackett/jackett';
 import { isValidKey } from '../util';
 
 export abstract class Arr extends Base {
-    config!: Config;
+    config: Config | undefined;
 
     indexerCache: IndexerResource[] = [];
 
@@ -18,6 +18,9 @@ export abstract class Arr extends Base {
         requestBody?: BodyInit,
     ): Promise<Record<string, unknown> | null> {
         const url = this.genURL(apiPath, pathValue);
+        if (url === null) {
+            return null;
+        }
         const responseBody = await fetch(url, method, requestBody);
         if (responseBody === null) {
             return null;
@@ -52,7 +55,11 @@ export abstract class Arr extends Base {
 
     async postIndexer(indexer: Indexer): Promise<void> {
         const apiPath = '/indexer';
-        const body: IndexerResource = this.genIndexerResource(indexer);
+        const indexerResource = this.genIndexerResource(indexer);
+        if (indexerResource === null) {
+            return;
+        }
+        const body: IndexerResource = indexerResource;
         const response = await this.api(
             Method.POST,
             apiPath,
@@ -133,34 +140,51 @@ export abstract class Arr extends Base {
         log.info(response);
     }
 
-    genIndexerResource(indexer: Indexer): IndexerResource {
-        return {
-            enableRss: this.getSetting(indexer, 'enableRss'),
-            enableAutomaticSearch: this.getSetting(
+    genIndexerResource(indexer: Indexer): IndexerResource | null {
+        const indexerResource = {
+            enableRss: this.getSetting<boolean>(indexer, 'enableRss'),
+            enableAutomaticSearch: this.getSetting<boolean>(
                 indexer,
                 'enableAutomaticSearch',
             ),
-            enableInteractiveSearch: this.getSetting(
+            enableInteractiveSearch: this.getSetting<boolean>(
                 indexer,
                 'enableInteractiveSearch',
             ),
             supportsRss: true,
             supportsSearch: true,
             protocol: 'torrent',
-            priority: this.getSetting(indexer, 'priority'),
-            downloadClientId: this.getSetting(indexer, 'downloadClientId'),
+            priority: this.getSetting<number>(indexer, 'priority'),
+            downloadClientId: this.getSetting<number>(
+                indexer,
+                'downloadClientId',
+            ),
             name: indexer.title,
             fields: this.genIndexerFields(indexer),
             implementationName: 'Torznab',
             implementation: 'Torznab',
             configContract: 'TorznabSettings',
-            tags: this.getSetting(indexer, 'tags'),
+            tags: this.getSetting<Array<number>>(indexer, 'tags'),
             id: undefined,
         };
+        const keys = Object.keys(indexerResource);
+        for (let index = 0; index < keys.length; index += 1) {
+            const key = keys[index];
+            if (isValidKey(key, indexerResource)) {
+                const value = indexerResource[key];
+                if ((key !== 'id' && value === undefined) || value === null) {
+                    return null;
+                }
+            }
+        }
+        return indexerResource as IndexerResource;
     }
-    abstract genIndexerFields(indexer: Indexer): Fields;
+    abstract genIndexerFields(indexer: Indexer): Fields | null;
 
-    getSetting<T>(indexer: Indexer, settingName: string): T {
+    getSetting<T>(indexer: Indexer, settingName: string): T | null {
+        if (this.config === undefined) {
+            return null;
+        }
         const indexerType = indexer.type;
         if (isValidKey(indexerType, this.config.setting)) {
             if (isValidKey(settingName, this.config.setting[indexerType])) {
@@ -176,7 +200,11 @@ export abstract class Arr extends Base {
         throw new Error(settingName);
     }
 
-    private genURL(apiPath: string, pathValue?: string | number): URL {
+    private genURL(apiPath: string, pathValue?: string | number): URL | null {
+        if (this.config === undefined) {
+            return null;
+        }
+
         const url = new URL(this.config.host);
         url.port = this.config.port;
         url.searchParams.append('apikey', this.config.key);
@@ -239,11 +267,7 @@ export abstract class Arr extends Base {
     }
 }
 
-export type Config = {
-    host: string;
-    port: string;
-    key: string;
-    path: string;
+export type Config = BaseConfig & {
     setting: {
         default: Setting;
         public?: Partial<Setting>;

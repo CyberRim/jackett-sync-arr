@@ -25,13 +25,17 @@ export class Sonarr extends Arr {
         return Sonarr.SonarrInstance;
     }
 
-    genIndexerFields(indexer: Indexer): Fields {
-        const baseUrlValue = Jackett.getInstance().genTorznabFeed(indexer).href;
-        const apiKeyValue = Jackett.getInstance().config.key;
+    genIndexerFields(indexer: Indexer): Fields | null {
+        const baseUrlValue =
+            Jackett.getInstance().genTorznabFeed(indexer)?.href;
+        const apiKeyValue = Jackett.getInstance().config?.key;
+        if (baseUrlValue === undefined || apiKeyValue === undefined) {
+            return null;
+        }
         const categoriesValue = Sonarr.genSonarrCategoriesValue(indexer);
         const animeCategoriesValue =
             Sonarr.genSonarrAnimeCategoriesValue(indexer);
-        return [
+        const fields = [
             { name: 'baseUrl', value: baseUrlValue },
             { name: 'apiPath', value: '/api' },
             { name: 'apiKey', value: apiKeyValue },
@@ -68,6 +72,13 @@ export class Sonarr extends Arr {
                 value: this.getSetting<string>(indexer, 'seasonPackSeedTime'),
             },
         ];
+        for (let index = 0; index < fields.length; index += 1) {
+            const { value } = fields[index];
+            if (value === null || value === undefined) {
+                return null;
+            }
+        }
+        return fields as Fields;
     }
 
     static genSonarrAnimeCategoriesValue(indexer: Indexer) {
