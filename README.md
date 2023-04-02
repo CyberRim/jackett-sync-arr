@@ -2,8 +2,8 @@
 
 ## 特性
 
-* 同步Jackett所有索引器到Radarr，Sonarr
-* 支持对不同类型的索引器（public/private)设置不同的配置
+-   同步 Jackett 所有索引器到 Radarr，Sonarr
+-   支持对不同类型的索引器（public/private)设置不同的配置
 
 ## 开始
 
@@ -17,6 +17,10 @@
 
 -   ```shell
       npm install
+    ```
+
+-   ```shell
+      npm run configIntit 
     ```
 
 -   修改配置文件 config/default.json
