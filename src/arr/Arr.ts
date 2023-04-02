@@ -229,6 +229,14 @@ export abstract class Arr extends Base {
         }
         return false;
     }
+
+    protected static genDefaultConfigHost() {
+        return 'http://127.0.0.1';
+    }
+
+    protected static genDefaultConfigPath() {
+        return '/api/v3';
+    }
 }
 
 export type Config = {
@@ -247,13 +255,13 @@ export type Setting = {
     enableAutomaticSearch: boolean;
     enableInteractiveSearch: boolean;
     apiPath: '/api';
-    multiLanguages: number[];
+    // multiLanguages: number[];
     additionalParameters: string;
-    removeYear: boolean;
+    // removeYear: boolean;
     minimumSeeders: number;
     seedRatio: string;
     seedTime: string;
-    requiredFlags: number[];
+    // requiredFlags: number[];
     priority: number;
     downloadClientId: number;
     tags: number[];

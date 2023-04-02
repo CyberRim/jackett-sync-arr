@@ -1,4 +1,4 @@
-import { Arr, Fields } from './Arr';
+import { Arr, Config as ArrConfig, Setting as ArrSetting, Fields } from './Arr';
 import { Indexer, Jackett } from '../jackett/jackett';
 import { ConfigName } from '../Base';
 
@@ -68,4 +68,57 @@ export class Radarr extends Arr {
             '2000',
         ]);
     }
+
+    private static genDefaultConfigPort() {
+        return '7878';
+    }
+
+    static genDefaultConfig() {
+        const config: Config = {
+            host: this.genDefaultConfigHost(),
+            port: this.genDefaultConfigPort(),
+            key: '',
+            path: this.genDefaultConfigPath(),
+            setting: {
+                default: {
+                    enableRss: true,
+                    enableAutomaticSearch: true,
+                    enableInteractiveSearch: true,
+                    apiPath: '/api',
+                    multiLanguages: [-2],
+                    additionalParameters: '',
+                    removeYear: false,
+                    minimumSeeders: 1,
+                    seedRatio: '',
+                    seedTime: '',
+                    requiredFlags: [],
+                    priority: 25,
+                    downloadClientId: 0,
+                    tags: [],
+                },
+                public: {
+                    downloadClientId: 0,
+                },
+                private: {
+                    requiredFlags: [1],
+                    downloadClientId: 0,
+                },
+            },
+        };
+        return config;
+    }
 }
+
+export type Config = Omit<ArrConfig, 'setting'> & {
+    setting: {
+        default: Setting;
+        public?: Partial<Setting>;
+        private?: Partial<Setting>;
+    };
+};
+
+type Setting = ArrSetting & {
+    multiLanguages: Array<number>;
+    removeYear: boolean;
+    requiredFlags: Array<number>;
+};

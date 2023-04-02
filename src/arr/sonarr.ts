@@ -1,6 +1,6 @@
 import { ConfigName } from '../Base';
 import { Indexer, Jackett } from '../jackett/jackett';
-import { Arr, Fields } from './Arr';
+import { Arr, Fields, Config as ArrConfig, Setting as ArrSetting } from './Arr';
 
 export default {};
 
@@ -82,4 +82,56 @@ export class Sonarr extends Arr {
             '5000',
         ]);
     }
+
+    private static genDefaultConfigPort() {
+        return '8989';
+    }
+
+    static genDefaultConfig() {
+        const config: Config = {
+            host: this.genDefaultConfigHost(),
+            port: this.genDefaultConfigPort(),
+            key: '',
+            path: this.genDefaultConfigPath(),
+            setting: {
+                default: {
+                    enableRss: true,
+                    enableAutomaticSearch: true,
+                    enableInteractiveSearch: true,
+                    apiPath: '/api',
+                    animeStandardFormatSearch: false,
+                    additionalParameters: '',
+                    minimumSeeders: 1,
+                    seedRatio: '',
+                    seedTime: '',
+                    seasonPackSeedTime: '',
+                    priority: 25,
+                    downloadClientId: 0,
+                    tags: [],
+                },
+                public: {
+                    downloadClientId: 0,
+                },
+                private: {
+                    enableRss: false,
+                    enableAutomaticSearch: false,
+                    downloadClientId: 0,
+                },
+            },
+        };
+        return config;
+    }
 }
+
+export type Config = Omit<ArrConfig, 'setting'> & {
+    setting: {
+        default: Setting;
+        public?: Partial<Setting>;
+        private?: Partial<Setting>;
+    };
+};
+
+type Setting = ArrSetting & {
+    animeStandardFormatSearch: boolean;
+    seasonPackSeedTime: string;
+};

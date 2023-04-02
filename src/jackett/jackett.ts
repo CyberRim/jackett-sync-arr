@@ -106,6 +106,16 @@ export class Jackett extends Base {
         url.pathname = `${this.config.path}/indexers/${indexerId}/results/torznab`;
         return url;
     }
+
+    static genDefaultConfig() {
+        const config: Config = {
+            host: 'http://127.0.0.1',
+            port: '9117',
+            key: '',
+            path: '/api/v2.0',
+        };
+        return config;
+    }
 }
 export type Indexer = {
     title: string;

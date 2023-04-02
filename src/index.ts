@@ -2,8 +2,10 @@ import { Jackett } from './jackett/jackett';
 import { Radarr } from './arr/radarr';
 import { log } from './logger/log';
 import { Sonarr } from './arr/sonarr';
+import { configInti } from './config';
 
 (async () => {
+    configInti();
     log.debug(`$NODE_ENV=${process.env.NODE_ENV as string}`);
     const jackett = Jackett.getInstance();
     const indexers = await jackett.getConfiguredIndexers();

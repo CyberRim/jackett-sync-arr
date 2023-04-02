@@ -1,5 +1,5 @@
-# debug config
-/config/dev.*
+#config
+/config/*
  
 
 # Logs
