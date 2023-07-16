@@ -128,7 +128,7 @@ export abstract class Arr extends Base {
         //   }
 
         if (response instanceof Array && response[0].severity === 'error') {
-            log.warn(`${body.name}${response[0].errorMessage as string}`);
+            log.warn(`${body.name} ${response[0].errorMessage as string}`);
             return;
         }
 
